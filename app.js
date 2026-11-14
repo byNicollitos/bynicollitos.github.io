@@ -13,6 +13,25 @@ function safeUrl(value, hosts) {
   } catch { return null; }
 }
 
+function embedPlayer(frame, media, project, autoplay) {
+  const player = document.createElement(media.type === 'video' ? 'video' : 'iframe');
+  player.src = autoplay ? resolveMedia(project.source).src : media.src;
+  if (media.type === 'video') {
+    player.controls = true;
+    player.playsInline = true;
+    player.preload = 'metadata';
+    player.autoplay = autoplay;
+  } else {
+    player.title = project.title;
+    player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    player.allowFullscreen = true;
+    player.referrerPolicy = 'strict-origin-when-cross-origin';
+  }
+  frame.replaceChildren(player);
+  if (autoplay) player.focus();
+}
+
+// Shows the thumbnail with a play button and only loads the player when clicked, so the page stays fast.
 function createPlayer(project) {
   const media = resolveMedia(project.source, {autoplay: false});
   const frame = document.createElement('div');
@@ -22,20 +41,22 @@ function createPlayer(project) {
     frame.textContent = 'Video coming soon';
     return frame;
   }
-  const player = document.createElement(media.type === 'video' ? 'video' : 'iframe');
-  player.src = media.src;
-  if (media.type === 'video') {
-    player.controls = true;
-    player.playsInline = true;
-    player.preload = 'metadata';
-  } else {
-    player.title = project.title;
-    player.loading = 'lazy';
-    player.allow = 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-    player.allowFullscreen = true;
-    player.referrerPolicy = 'strict-origin-when-cross-origin';
-  }
-  frame.append(player);
+  const poster = safeUrl(project.poster);
+  if (!poster) { embedPlayer(frame, media, project, false); return frame; }
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'video-poster';
+  button.setAttribute('aria-label', `Play ${project.title}`);
+  const img = document.createElement('img');
+  img.src = poster; img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+  img.addEventListener('error', () => img.remove());
+  const mark = document.createElement('span');
+  mark.className = 'play-mark'; mark.setAttribute('aria-hidden', 'true');
+  mark.innerHTML = '<svg viewBox="0 0 24 24"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>';
+  button.append(img, mark);
+  if (project.duration) { const duration = document.createElement('span'); duration.className = 'poster-duration'; duration.textContent = project.duration; button.append(duration); }
+  button.addEventListener('click', () => embedPlayer(frame, media, project, true));
+  frame.append(button);
   return frame;
 }
 
@@ -45,7 +66,7 @@ function createCard(project) {
   const meta = document.createElement('div'); meta.className = 'video-meta';
   const title = document.createElement('h4'); title.textContent = project.title;
   meta.append(title);
-  if (project.duration) { const duration = document.createElement('span'); duration.className = 'video-duration'; duration.textContent = project.duration; meta.append(duration); }
+  if (project.spec) { const tag = document.createElement('span'); tag.className = 'spec-tag'; tag.textContent = 'Spec edit'; meta.append(tag); }
   card.append(createPlayer(project), meta);
   return card;
 }

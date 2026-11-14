@@ -5,13 +5,14 @@ export const portfolio = {
   role: 'Gaming video editor',
   bio: "I edit gaming videos for YouTube. I turn raw gameplay and stream footage into videos with tight pacing that keep viewers watching to the end.",
   contactCta: "Need an editor for your channel? Send me a message and let's work together!",
-  email: '', // Your email address, e.g. 'you@example.com'. The Email button stays hidden while empty.
+  email: 'bynicollitos@gmail.com', // Your email address, e.g. 'you@example.com'. The Email button stays hidden while empty.
   twitter: 'https://x.com/bynicollitos', // Your full HTTPS Twitter/X profile URL.
   discord: 'https://discord.com/users/674778823488831519', // Your full HTTPS Discord profile or invite URL.
   discordUsername: '', // Your Discord username. When set, the Discord button copies it instead of opening the profile.
   // Channels you've worked with. The section stays hidden while this list is empty.
   // Example: { name: 'Channel name', subscribers: '1.2M', url: 'https://www.youtube.com/@channel', image: 'assets/channel.jpg' }
   clients: [],
+  // Set "spec": true on a project to label it as a spec edit (made to show your skills, not for a client).
   projects: [
   {
     "id": "long-02",
@@ -20,7 +21,8 @@ export const portfolio = {
     "category": "Long-form",
     "duration": "3:07",
     "source": "https://youtu.be/SKKooj7ys30",
-    "poster": "https://i.ytimg.com/vi/SKKooj7ys30/hqdefault.jpg"
+    "poster": "https://i.ytimg.com/vi/SKKooj7ys30/maxresdefault.jpg",
+    "spec": true
   },
   {
     "id": "long-01",
@@ -29,7 +31,8 @@ export const portfolio = {
     "category": "Long-form",
     "duration": "4:22",
     "source": "https://www.youtube.com/watch?v=3CNkh4h1VO8",
-    "poster": "https://i.ytimg.com/vi/3CNkh4h1VO8/hqdefault.jpg"
+    "poster": "https://i.ytimg.com/vi/3CNkh4h1VO8/maxresdefault.jpg",
+    "spec": true
   },
   {
     "id": "short-01",
